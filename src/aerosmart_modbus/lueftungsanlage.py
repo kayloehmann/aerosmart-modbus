@@ -34,6 +34,14 @@ class Ventilation(AerosmartComponent):
         5002,
         VentilationMode,
         writable=True,
+        options=(
+            (0, "Manuell Stufe 0"),
+            (1, "Manuell Stufe 1"),
+            (2, "Manuell Stufe 2"),
+            (3, "Manuell Stufe 3"),
+            (4, "Automatikbetrieb"),
+            (5, "Party"),
+        ),
         source_key="aerosmartm_betriebsart",
         description="Betriebsart",
     )
