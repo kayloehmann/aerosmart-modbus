@@ -21,6 +21,18 @@ FIXTURES = Path(__file__).parent / "fixtures" / "aerosmartm"
 
 FIELD_RE = re.compile(r"^(name|slave|address|input_type|data_type|scale):\s*(.*?)\s*$")
 
+# Fields whose scale was corrected against the official Drexel & Weiss Modbus
+# documentation (aerosmart_m_modbus.pdf, "Modbus_Parameter_aerosmart_m",
+# p.55-63) after it was found to differ from the source YAML's (scale-less)
+# transcription. Source of truth flips from "matches the YAML" to "matches the
+# manufacturer doc" for exactly these keys; see the comments at each field's
+# definition for the specific verification.
+VERIFIED_SCALE_OVERRIDES = {
+    "aerosmartm_zeitspanne_function_heizung_plus": 0.0166666667,
+    "aerosmartm_sollwert_erhoehung_function_heizung_plus": 0.001,
+    "aerosmartm_zeitspanne_function_party": 0.0166666667,
+}
+
 
 def _parse_yaml_fixtures() -> dict[str, dict[str, str]]:
     """source_key -> {slave, address, data_type, scale} across all fixtures."""
@@ -90,7 +102,9 @@ def test_every_python_field_matches_its_source_yaml():
                 f"{meta.source_key} (Python attr {attr}) not found in YAML fixtures"
             )
             assert field.address == int(yaml_entry["address"]), meta.source_key
-            expected_scale = float(yaml_entry.get("scale", "1") or "1")
+            expected_scale = VERIFIED_SCALE_OVERRIDES.get(
+                meta.source_key, float(yaml_entry.get("scale", "1") or "1")
+            )
             assert field.scale == expected_scale, meta.source_key
             checked += 1
 

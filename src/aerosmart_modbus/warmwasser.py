@@ -93,11 +93,15 @@ class HotWaterHeatPump(AerosmartComponent):
     )
 
     # Brauchwasser Solltemperatur
+    # Official Drexel & Weiss doc confirms R/W, 20.0-55.0 °C (WP table only --
+    # may not exist on installations without a heat pump).
     wp_brauchwasser_soll_temp = uint32(
         5064,
         scale=0.001,
         unit="°C",
         writable=True,
+        min_value=20.0,
+        max_value=55.0,
         source_key="aerosmartm_wp_brauchwasser_soll_temp",
         description="Brauchwasser Solltemperatur",
     )

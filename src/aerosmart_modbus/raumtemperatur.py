@@ -18,11 +18,14 @@ class RoomTemperature(AerosmartComponent):
     )
 
     # Temperatur Raumluft Soll
+    # Official Drexel & Weiss doc confirms R/W, 14.0-26.0 °C.
     temp_raumluft_soll = uint32(
         5016,
         scale=0.001,
         unit="°C",
         writable=True,
+        min_value=14.0,
+        max_value=26.0,
         source_key="aerosmartm_temp_raumluft_soll",
         description="Temperatur Raumluft Soll",
     )
