@@ -6,9 +6,10 @@ This module intentionally contains no Home Assistant concepts.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import IntEnum
 from typing import Literal
 
-ValueKind = Literal["number", "boolean"]
+ValueKind = Literal["number", "boolean", "enum"]
 
 
 @dataclass(frozen=True)
@@ -37,6 +38,19 @@ class BooleanMetadata:
 
 
 @dataclass(frozen=True)
+class EnumMetadata:
+    """Metadata for enum-coded aerosmart values.
+
+    ``options`` maps each valid raw code to a human-readable label, in
+    document order -- the neutral equivalent of a Home Assistant ``select``
+    entity's option list, without any Home Assistant concepts here.
+    """
+
+    enum_type: type[IntEnum]
+    options: tuple[tuple[int, str], ...]
+
+
+@dataclass(frozen=True)
 class DatapointMetadata:
     """Neutral metadata for one aerosmart datapoint.
 
@@ -54,6 +68,7 @@ class DatapointMetadata:
     verified_writable: bool = False
     number: NumberMetadata | None = None
     boolean: BooleanMetadata | None = None
+    enum: EnumMetadata | None = None
 
 
 def attach_metadata(field: object, metadata: DatapointMetadata) -> object:

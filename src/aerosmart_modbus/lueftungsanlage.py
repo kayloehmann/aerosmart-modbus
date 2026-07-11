@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from .model import AerosmartComponent, uint32
+from .enums import VentilationMode
+from .model import AerosmartComponent, enum, uint32
 
 
 class Ventilation(AerosmartComponent):
@@ -24,8 +25,17 @@ class Ventilation(AerosmartComponent):
     )
 
     # Betriebsart
-    betriebsart = uint32(
-        5002, source_key="aerosmartm_betriebsart", description="Betriebsart"
+    # Verified against the official Drexel & Weiss doc: R/W, enum 0-5. Do not
+    # confuse with the two similarly-named but read-only registers
+    # betriebsart_sommerautomatik (1300, in sommerautomatik.py) and
+    # grobstaubfilter_betriebsart_filterueberwachung (5164) -- 5002 is the only
+    # writable "Betriebsart" register.
+    betriebsart = enum(
+        5002,
+        VentilationMode,
+        writable=True,
+        source_key="aerosmartm_betriebsart",
+        description="Betriebsart",
     )
 
     betriebsstunden_beschattung = uint32(
