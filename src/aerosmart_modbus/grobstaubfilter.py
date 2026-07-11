@@ -8,13 +8,11 @@ from .model import AerosmartComponent, int32, uint32
 class CoarseDustFilter(AerosmartComponent):
     """Coarse dust filter."""
 
-    # ###########################################################################
     betriebsstunden_grobstaubfilter = int32(
         926,
         scale=0.0166666667,
         unit="h",
         source_key="aerosmartm_betriebsstunden_grobstaubfilter",
-        description="###########################################################################",
     )
 
     grobstaubfilter_vorhanden = uint32(

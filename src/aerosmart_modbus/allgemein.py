@@ -8,12 +8,7 @@ from .model import AerosmartComponent, uint32
 class General(AerosmartComponent):
     """General controller registers."""
 
-    # ###########################################################################
-    wochentag = uint32(
-        1174,
-        source_key="aerosmartm_wochentag",
-        description="###########################################################################",
-    )
+    wochentag = uint32(1174, source_key="aerosmartm_wochentag")
 
     # Software Version
     software_version = uint32(

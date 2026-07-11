@@ -8,12 +8,8 @@ from .model import AerosmartComponent, uint32
 class Fans(AerosmartComponent):
     """Fans."""
 
-    # ###########################################################################
     ist_ventilator_zuluft = uint32(
-        1184,
-        unit="rpm",
-        source_key="aerosmartm_ist_ventilator_zuluft",
-        description="###########################################################################",
+        1184, unit="rpm", source_key="aerosmartm_ist_ventilator_zuluft"
     )
 
     ist_ventilator_abluft = uint32(
