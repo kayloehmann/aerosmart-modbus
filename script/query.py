@@ -7,7 +7,7 @@ by CI.
 
 Usage:
     python -m pip install -e ".[cli]"
-    python script/query.py tcp 10.111.0.46 --port 8899
+    python script/query.py tcp 192.0.2.10 --port 8899
 """
 
 from __future__ import annotations

@@ -52,7 +52,7 @@ from modbus_connection.pymodbus import connect_tcp
 from aerosmart_modbus import AerosmartDevice
 
 async def main():
-    connection = await connect_tcp("10.111.0.46", port=8899)
+    connection = await connect_tcp("192.0.2.10", port=8899)
     device = AerosmartDevice(
         connection.for_unit(1),  # ventilation
         connection.for_unit(2),  # heat pump
@@ -88,7 +88,7 @@ every writable field as unverified until checked against the real unit.
 
 ```bash
 python -m pip install -e ".[cli]"
-python script/query.py tcp 10.111.0.46 --port 8899
+python script/query.py tcp 192.0.2.10 --port 8899
 ```
 
 Prints every sub-system's current values, plus how many Modbus reads it took.
