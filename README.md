@@ -64,6 +64,19 @@ async def main():
 asyncio.run(main())
 ```
 
+## Known hardware quirk: request pacing
+
+Live-tested against a real unit: this device sits behind a slow
+RS232-to-Modbus-TCP gateway. Issuing requests back-to-back with no pacing at
+all made the gateway return responses under stale/mismatched transaction IDs,
+and most reads timed out. Setting `unit.set_message_spacing(0.3)` (300ms
+between requests) on both units, plus a short (~1-2s) settle delay after
+connecting and after switching which unit you address, fixed this completely
+-- all 137 registers then read cleanly. This library does not set spacing
+itself (it only models registers, not connection policy); a consumer talking
+to the real gateway should configure it on the `ModbusUnit` it passes in. The
+Home Assistant integrations in the sibling repos do this already.
+
 ## Metadata and writes
 
 Every field carries a `DatapointMetadata` (see `metadata.py`):
