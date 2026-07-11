@@ -1,0 +1,107 @@
+############################################################################
+# Ventilatoren
+############################################################################
+
+  - name: aerosmartm_ist_ventilator_zuluft
+    slave: 1
+    address: 1184
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "rpm"
+    state_class: measurement
+    
+  - name: aerosmartm_ist_ventilator_abluft
+    slave: 1
+    address: 1186
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "rpm"
+    state_class: measurement
+
+  - name: aerosmartm_betriebsstunden_abluftventilator
+    slave: 1
+    address: 902
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+  - name: aerosmartm_betriebsstunden_zuluftventilator
+    slave: 1
+    address: 900
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+    # Anforderung der Ventilatoren durch Wärmepumpe (read)
+  - name: aerosmartm_anforderung_ventilatoren_durch_waermepumpe
+    slave: 1
+    address: 1292
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Anforderung der Ventilatoren durch Zonenregelung (read)
+  - name: aerosmartm_anforderung_ventilatoren_durch_zonenregelung
+    slave: 1
+    address: 1336
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Drehzahl Abluftventilator
+  - name: aerosmartm_drehzahl_abluftventilator
+    slave: 1
+    address: 1094
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Drehzahl Zuluftventilator
+  - name: aerosmartm_drehzahl_zuluftventilator
+    slave: 1
+    address: 1092
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Zuluftventilator
+  - name: aerosmartm_stoerung_zuluftventilator
+    slave: 1
+    address: 824
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Abluftventilator
+  - name: aerosmartm_stoerung_abluftventilator
+    slave: 1
+    address: 826
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Maximal zulässige Drehzahl Abluftventilator
+  - name: aerosmartm_max_permissible_exhaust_air_fan_speed
+    slave: 1
+    address: 5270
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "1/min"
+    state_class: measurement
+
+    # Maximal zulässige Drehzahl Zuluftventilator
+  - name: aerosmartm_max_permissible_supply_air_fan_speed
+    slave: 1
+    address: 5268
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "1/min"
+    state_class: measurement

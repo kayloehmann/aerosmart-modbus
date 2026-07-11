@@ -1,0 +1,65 @@
+############################################################################
+# Allgemein
+############################################################################
+
+  - name: aerosmartm_wochentag
+    slave: 1
+    address: 1174
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Software Version
+  - name: aerosmartm_software_version
+    slave: 1
+    address: 1156
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Gerätetyp
+  - name: aerosmartm_device_type
+    slave: 1
+    address: 5000
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+    
+    # Relaiskontakt: EXT (LU)
+  - name: aerosmartm_relaykontakt_ext_lu
+    slave: 1
+    address: 252
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Revisionstüre
+  - name: aerosmartm_revisionstuer
+    slave: 1
+    address: 226
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Uhrzeit
+  - name: aerosmartm_time
+    slave: 1
+    address: 5212
+    input_type: holding
+    data_type: uint32
+
+    # Uhrzeit und Datum verschicken
+  - name: aerosmartm_send_date_time
+    slave: 1
+    address: 5442
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Datum
+  - name: aerosmartm_date
+    slave: 1
+    address: 5210
+    input_type: holding
+    data_type: uint32
+    state_class: measurement

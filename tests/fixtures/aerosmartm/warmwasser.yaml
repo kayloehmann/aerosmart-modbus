@@ -1,0 +1,136 @@
+############################################################################
+# Warmwasser
+############################################################################
+
+# Temperatur: Warmwasserspeicher oben (T_BW_EHZ)
+  - name: aerosmartm_warmwasser_speicher_oben
+    slave: 2
+    address: 212
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+  # Temperatur: Warmwasserspeicher Wärmepumpe (T_BW_WP)
+  - name: aerosmartm_warmwasser_warmepumpe
+    slave: 2
+    address: 214
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+  # Überschreitung Boilertemperatur
+  - name: aerosmartm_ueberschreitung_boilertemp
+    slave: 2
+    address: 7006
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Anforderung Disbalance (Boilerüberwärmung) (read)
+  - name: aerosmartm_anforderung_disbalance_boilerueberwaermung
+    slave: 1
+    address: 1338
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Boilerfühler Elektroheizstab
+  - name: aerosmartm_stoerung_elektroheizstab
+    slave: 1
+    address: 828
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Boilerfühler Wärmepumpe
+  - name: aerosmartm_stoerung_boilerfuehler_waermepumpe
+    slave: 1
+    address: 830
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Boilerübertemperatur
+  - name: aerosmartm_stoerung_boiler_uebertemperatur
+    slave: 1
+    address: 810
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+  # Vorübergehende Boilerübertemperatur
+  - name: aerosmartm_wp_vorruebergehende_boilertemperatur
+    slave: 2
+    address: 1212
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Brauchwasser Solltemperatur
+  - name: aerosmartm_wp_brauchwasser_soll_temp
+    slave: 2
+    address: 5064
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Brauchwassertemperatur: Raumheizungssperre
+  - name: aerosmartm_wp_brauchwasser_temp_raumheizungssperre
+    slave: 2
+    address: 5130
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+  # Verzögerung Brauchwassererheizung
+  - name: aerosmartm_wp_verzoegerung_brauchwasserheizung
+    slave: 2
+    address: 5374
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Anforderung: Brauchwasserheizung Elektoheizstab (read)
+  - name: aerosmartm_anforderung_brauchwasserheizung_elektroheizstab
+    slave: 1
+    address: 1038
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Anforderung: Brauchwasserheizung Wärmepumpe (read)
+  - name: aerosmartm_anforderung_brauchwasserheizung_waermepumpe
+    slave: 1
+    address: 1036
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Betriebsstunden: Elektroheizstab
+  - name: aerosmartm_wp_betriebsstunden_elektroheizstab
+    slave: 2
+    address: 922
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "h"
+    state_class: measurement
+
+    # Elektroheizstab vorhanden?
+  - name: aerosmartm_wp_elektroheizstab_vorhanden
+    slave: 2
+    address: 5126
+    input_type: holding
+    data_type: uint32
+    state_class: measurement

@@ -1,0 +1,33 @@
+############################################################################
+# ühlung
+############################################################################
+
+# Temperatur Außenluft: Kühlung aus
+  - name: aerosmartm_aussenluft_temp_kuehlung_aus
+    slave: 1
+    address: 5200
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Außenluft: Kühlung ein
+  - name: aerosmartm_aussenluft_temp_kuehlung_ein
+    slave: 1
+    address: 5198
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Kühlung vorhanden?
+  - name: aerosmartm_kuehlung_vorhanden
+    slave: 1
+    address: 5192
+    input_type: holding
+    data_type: uint32
+    state_class: measurement

@@ -1,0 +1,256 @@
+############################################################################
+# Lüftungsanlage
+############################################################################
+    
+    # Absenkung der Lüfterstufe 1
+  - name: aerosmartm_absenkung_aktive_luefterstufe
+    slave: 1
+    address: 5328
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "%"
+    state_class: measurement
+
+    # Aktive Lüfterstufe
+  - name: aerosmartm_aktive_luefterstufe
+    slave: 1
+    address: 1066
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Betriebsart
+  - name: aerosmartm_betriebsart
+    slave: 1
+    address: 5002
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+  - name: aerosmartm_betriebsstunden_beschattung
+    slave: 1
+    address: 964
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+  - name: aerosmartm_betriebsstunden_frostschutzeinrichtung
+    slave: 1
+    address: 940
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+  - name: aerosmartm_betriebsstunden_heizstufe1
+    slave: 1
+    address: 912
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+  - name: aerosmartm_betriebsstunden_heizstufe2
+    slave: 1
+    address: 914
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+  - name: aerosmartm_betriebsstunden_luefterstufe0
+    slave: 1
+    address: 962
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+  - name: aerosmartm_betriebsstunden_luefterstufe1
+    slave: 1
+    address: 904
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+  - name: aerosmartm_betriebsstunden_luefterstufe2
+    slave: 1
+    address: 906
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+  - name: aerosmartm_betriebsstunden_luefterstufe3
+    slave: 1
+    address: 908
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+    # Anforderung: Abtauen (read)
+  - name: aerosmartm_anforderung_abtauen
+    slave: 1
+    address: 1050
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Anforderung: Beschattung (read)
+  - name: aerosmartm_anforderung_beschattung
+    slave: 1
+    address: 1218
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Anforderung: LST3_EXT (read)
+  - name: aerosmartm_anforderung_st3_ext
+    slave: 1
+    address: 228
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Beschattungsfunktion
+  - name: aerosmartm_beschattungsfunktion
+    slave: 1
+    address: 5336
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Erhöhung der Lüfterstufe 3 (R/W)
+  - name: aerosmartm_erhoehung_luefterstufe_3
+    slave: 1
+    address: 5330
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "%"
+    state_class: measurement
+
+############################################################################
+# Störungen
+
+    # Störung: Teilnehmer nicht erreichbar!
+  - name: aerosmartm_stoerung_teilnehmer_nicht_erreichbar
+    slave: 1
+    address: 856
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Temperaturfühler Verdampferregister
+  - name: aerosmartm_stoerung_temperaturfuehler_verdampferregister
+    slave: 1
+    address: 808
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Wärmepumpe Hochdruck
+  - name: aerosmartm_stoerung_waermepumpe_hochdruck
+    slave: 1
+    address: 818
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Wärmepumpe Niederdruck
+  - name: aerosmartm_stoerung_waermepumpe_niederdruck
+    slave: 1
+    address: 820
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Wert nicht zulässig
+  - name: aerosmartm_stoerung_wert_nicht_zulaessig
+    slave: 1
+    address: 840
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+############################################################################
+# Fördermengen
+    # Gesamt beförderte Kubikmeter
+  - name: aerosmartm_befoerderte_kubikmeter
+    slave: 1
+    address: 946
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "m³"
+    state_class: total_increasing
+
+    # Gesamt beförderte Luftmenge seit Filterwechsel
+  - name: aerosmartm_befoerderte_luftmenge_seit_filterwechsel
+    slave: 1
+    address: 960
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "m³"
+    state_class: measurement
+
+    # Soll-Volumenstrom Abluft
+  - name: aerosmartm_soll_volumenstrom_abluft
+    slave: 1
+    address: 1084
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "m³"
+    state_class: measurement  
+
+    # Soll-Volumenstrom Lüfterstufe 2 (read/write)
+  - name: aerosmartm_soll_volumenstrom_luefterstufe2
+    slave: 1
+    address: 5060
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "m³/h"
+    state_class: measurement
+
+    # Soll-Volumenstrom Zuluft
+  - name: aerosmartm_soll_volumenstrom_zuluft
+    slave: 1
+    address: 1082
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "m³"
+    state_class: measurement
+
+    # Volumenstrombalance ZuluftAbluft
+  - name: aerosmartm_volumenstrombalance_zuluftabluft
+    slave: 1
+    address: 5026
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "%"
+    state_class: measurement

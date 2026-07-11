@@ -1,0 +1,27 @@
+############################################################################
+# Brandmeldeanlage
+############################################################################
+
+    # Brandmeldealarm
+  - name: aerosmartm_brandmeldealarm
+    slave: 1
+    address: 838
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Brandmeldeanlage vorhanden?
+  - name: aerosmartm_brandmeldealarm_vorhanden
+    slave: 1
+    address: 5068
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Kontakt: Brandmeldealarm
+  - name: aerosmartm_kontakt_brandmeldealarm
+    slave: 1
+    address: 238
+    input_type: holding
+    data_type: uint32
+    state_class: measurement

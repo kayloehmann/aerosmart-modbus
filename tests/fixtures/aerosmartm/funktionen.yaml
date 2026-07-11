@@ -1,0 +1,46 @@
+############################################################################
+# Allgemein
+############################################################################
+
+    # Funktion HEIZUNG+
+  - name: aerosmartm_function_heizung_plus
+    slave: 1
+    address: 5492
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Zeitspanne Funktion HEIZUNG+
+  - name: aerosmartm_zeitspanne_function_heizung_plus
+    slave: 1
+    address: 5494
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "min"
+    state_class: measurement
+
+    # Sollwert-Erhöhung Funktion HEIZUNG+
+  - name: aerosmartm_sollwert_erhoehung_function_heizung_plus
+    slave: 1
+    address: 5496
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "K"
+    state_class: measurement
+
+    # Zeitspanne Funktion PARTY
+  - name: aerosmartm_zeitspanne_function_party
+    slave: 1
+    address: 5038
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "min"
+    state_class: measurement
+
+    # Funktion BAD+
+  - name: aerosmartm_function_bad_plus
+    slave: 2
+    address: 5036
+    input_type: holding
+    data_type: uint32
+    state_class: measurement

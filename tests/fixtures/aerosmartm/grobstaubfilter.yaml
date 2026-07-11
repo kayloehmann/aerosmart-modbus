@@ -1,0 +1,55 @@
+############################################################################
+# Grobstaubfilter
+############################################################################
+
+  - name: aerosmartm_betriebsstunden_grobstaubfilter
+    slave: 1
+    address: 926
+    input_type: holding
+    data_type: int32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+
+  - name: aerosmartm_grobstaubfilter_vorhanden
+    slave: 1
+    address: 5154
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Grobstaubfilter wechseln?
+  - name: aerosmartm_grobstaubfilter_wechseln
+    slave: 1
+    address: 7002
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Grobstaubfilter Standzeit
+  - name: aerosmartm_grobstaubfilter_standzeit
+    slave: 1
+    address: 5030
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "h"
+    state_class: measurement
+
+    # Grobstaubfilter: Betriebsart Filterüberwachung
+  - name: aerosmartm_grobstaubfilter_betriebsart_filterueberwachung
+    slave: 1
+    address: 5164
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Grobstaubfilter: Maximales Fördervolumen
+  - name: aerosmartm_grobstaubfilter_max_foerdervolume
+    slave: 1
+    address: 5166
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "m³"
+    state_class: measurement

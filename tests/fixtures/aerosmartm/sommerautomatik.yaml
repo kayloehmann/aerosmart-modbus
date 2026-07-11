@@ -1,0 +1,59 @@
+############################################################################
+# Sommerautomatik
+############################################################################
+
+    # Betriebsart Sommerautomatik  
+  - name: aerosmartm_betriebsart_sommerautomatik
+    slave: 1
+    address: 1300
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Anforderung: Sommerautomatik (read)
+  - name: aerosmartm_anforderung_sommerautomatik
+    slave: 1
+    address: 1322
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Funktion „Sommerautomatik“
+  - name: aerosmartm_function_sommerautomatik
+    slave: 1
+    address: 5384
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Sommerautomatik Schaltpunkt 1
+  - name: aerosmartm_sommerautomatik_schaltpunkt1
+    slave: 1
+    address: 5390
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Sommerautomatik Schaltpunkt 2
+  - name: aerosmartm_sommerautomatik_schaltpunkt2
+    slave: 1
+    address: 5392
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Sommerautomatik Schaltpunkt 3
+  - name: aerosmartm_sommerautomatik_schaltpunkt3
+    slave: 1
+    address: 5394
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Sommerautomatik Schaltpunkt 4
+  - name: aerosmartm_sommerautomatik_schaltpunkt4
+    slave: 1
+    address: 5396
+    input_type: holding
+    data_type: uint32
+    state_class: measurement

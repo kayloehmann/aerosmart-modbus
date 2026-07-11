@@ -1,0 +1,31 @@
+############################################################################
+# EVU Anlage
+############################################################################
+
+# EVU Anlage vorhanden?
+- name: aerosmartm_evu_vorhanden
+  slave: 2
+  address: 5146
+  input_type: holding
+  data_type: uint32
+
+# EVU-Sperre Brauchwasser aktiv?
+- name: aerosmartm_evu_sperre_brauchwasser_aktiv
+  slave: 2
+  address: 1270
+  input_type: holding
+  data_type: uint32
+
+# EVU-Sperre Elektroheizstab aktiv?
+- name: aerosmartm_evu_sperre_elektroheizstab_aktiv
+  slave: 2
+  address: 1274
+  input_type: holding
+  data_type: uint32
+
+# EVU-Sperre Raumheizung aktiv?
+- name: aerosmartm_evu_sperre_raumheizung_aktiv
+  slave: 2
+  address: 1272
+  input_type: holding
+  data_type: uint32

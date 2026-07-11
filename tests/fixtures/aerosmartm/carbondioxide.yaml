@@ -1,0 +1,36 @@
+############################################################################
+# CO2
+############################################################################
+
+    # CO2-Messung
+  - name: aerosmartm_co2_measurement
+    slave: 1
+    address: 1048
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # CO2-Sensor vorhanden?
+  - name: aerosmartm_co2_sensor_available
+    slave: 1
+    address: 5054
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: CO2 Sensor
+  - name: aerosmartm_stoerung_co2_sensor
+    slave: 1
+    address: 832
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # CO2
+  - name: aerosmartm_co2
+    slave: 1
+    address: 230
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "ppm"
+    state_class: measurement

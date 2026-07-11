@@ -1,0 +1,108 @@
+############################################################################
+# Wärmepumpe
+############################################################################
+
+  # Wärmepumpe
+  - name: aerosmartm_waermepumpe
+    slave: 2
+    address: 1044
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+  # Verdampferregister
+  - name: aerosmartm_wp_verdamperregister
+    slave: 2
+    address: 210
+    input_type: holding
+    data_type: uint32
+    scale: 100
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+  # Zentralgerät Adresse (WP)
+  - name: aerosmartm_wp_zentralgeraet_adresse
+    slave: 2
+    address: 5436
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Betriebsstunden: Kompressormotor
+  - name: aerosmartm_wp_betriebsstunden_kompressormotor
+    slave: 2
+    address: 910
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "h"
+    state_class: measurement
+
+    # Betriebsstunden: Magnetventil Flüssiggas
+  - name: aerosmartm_wp_betriebsstunden_magnetventil_fluessiggas
+    slave: 2
+    address: 916
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "h"
+    state_class: measurement
+  
+    # Betriebsstunden: Magnetventil Heißgas
+  - name: aerosmartm_wp_betriebsstunden_magnetventil_heissgas
+    slave: 2
+    address: 918
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "h"
+    state_class: measurement
+
+    # Betriebsstunden: Magnetventil Luftkondensator
+  - name: aerosmartm_wp_betriebsstunden_magnetventil_luftkondensator
+    slave: 2
+    address: 920
+    input_type: holding
+    data_type: uint32
+    unit_of_measurement: "h"
+    state_class: measurement
+
+    # Hochdruck Wärmepumpe
+  - name: aerosmartm_wp_hochdruck
+    slave: 2
+    address: 222
+    input_type: holding
+    data_type: uint32
+
+    # Kontakt (EVU)
+  - name: aerosmartm_wp_kontakt_evu
+    slave: 2
+    address: 232
+    input_type: holding
+    data_type: uint32
+
+    # Niederdruck Wärmepumpe
+  - name: aerosmartm_wp_niederdruck
+    slave: 2
+    address: 224
+    input_type: holding
+    data_type: uint32
+
+    # Relaiskontakt: EXT (WP)
+  - name: aerosmartm_wp_relaiskontakt_ext
+    slave: 2
+    address: 262
+    input_type: holding
+    data_type: uint32
+
+    # Status Wärmepumpe
+  - name: aerosmartm_wp_status
+    slave: 2
+    address: 1314
+    input_type: holding
+    data_type: uint32
+
+    # Status Wärmepumpe (Restzeit des aktuellen Status)
+  - name: aerosmartm_wp_status_restlaufzeit
+    slave: 2
+    address: 1316
+    input_type: holding
+    data_type: uint32

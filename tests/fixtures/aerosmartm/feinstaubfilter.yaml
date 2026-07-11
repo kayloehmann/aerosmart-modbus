@@ -1,0 +1,39 @@
+############################################################################
+# Grobstaubfilter
+############################################################################
+
+# Feinstaubfilter vorhanden?
+- name: aerosmartm_feinstaubfilter_vorhanden
+  slave: 1
+  address: 5034
+  input_type: holding
+  data_type: uint32
+  state_class: measurement
+
+# Feinstaubfilter wechseln?
+- name: aerosmartm_feinstaubfilter_wechseln
+  slave: 1
+  address: 7004
+  input_type: holding
+  data_type: uint32
+  state_class: measurement
+
+# Feinstaubfilter Standzeit
+- name: aerosmartm_feinstaubfilter_standzeit
+  slave: 1
+  address: 5032
+  input_type: holding
+  data_type: uint32
+  unit_of_measurement: "h"
+  state_class: measurement
+
+- name: aerosmartm_betriebsstunden_feinstaubfilter
+  slave: 1
+  address: 928
+  input_type: holding
+  data_type: uint32
+  scale: 0.0166666667
+  precision: 0
+  unit_of_measurement: "h"
+  device_class: duration
+  state_class: total_increasing

@@ -1,0 +1,76 @@
+############################################################################
+# Raumtemperatur
+############################################################################
+
+    # Temperatur Raumluft
+  - name: aerosmartm_temp_raumluft
+    slave: 1
+    address: 200
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Raumluft Soll
+  - name: aerosmartm_temp_raumluft_soll
+    slave: 1
+    address: 5016
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Raum Beschattung
+  - name: aerosmartm_raum_temp_beschattung
+    slave: 1
+    address: 5338
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Störung: Temperaturfühler Raum
+  - name: aerosmartm_stoerung_temperaturfuehler_raum
+    slave: 1
+    address: 804
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Time-Out: Solltemperatur Raum
+  - name: aerosmartm_timeout_soll_temp_raum
+    slave: 1
+    address: 7508
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Time-Out: Temperaturfühler Raum
+  - name: aerosmartm_timeout_temp_fuehler_raum
+    slave: 1
+    address: 7506
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Anforderung: Raum-Heizstufe 1 (read)
+  - name: aerosmartm_anforderung_raum_heizstufe_1
+    slave: 1
+    address: 1032
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Anforderung: Raum-Heizstufe 2 (read)
+  - name: aerosmartm_anforderung_raum_heizstufe_2
+    slave: 1
+    address: 1034
+    input_type: holding
+    data_type: uint32
+    state_class: measurement

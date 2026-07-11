@@ -1,0 +1,19 @@
+############################################################################
+# Summenstörung
+############################################################################
+
+    # Störung: Summenstörung
+  - name: aerosmartm_stoerung_summenstoerung
+    slave: 1
+    address: 800
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Summenstörung 2
+  - name: aerosmartm_stoerung_summenstoerung2
+    slave: 1
+    address: 7500
+    input_type: holding
+    data_type: uint32
+    state_class: measurement

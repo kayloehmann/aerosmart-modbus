@@ -1,0 +1,168 @@
+############################################################################
+# Aussentemperatur
+############################################################################
+
+    # Außenluftfühler vorhanden?
+  - name: aerosmartm_aussenluftfuehler_vorhanden
+    slave: 1
+    address: 5304
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Temperatur Aussenluft
+  - name: aerosmartm_temp_aussenluft
+    slave: 1
+    address: 202
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Aussenluft: Beschattung
+  - name: aerosmartm_aussenluft_temp_beschattung
+    slave: 1
+    address: 5340
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Außenluft: Frostschutz
+  - name: aerosmartm_aussenluft_temp_frostschutz
+    slave: 1
+    address: 5206
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Außenluft: Frostschutz aus
+  - name: aerosmartm_aussenluft_temp_frostschutz_aus
+    slave: 1
+    address: 5090
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Außenluft: Frostschutz ein
+  - name: aerosmartm_aussenluft_temp_frostschutz_ein
+    slave: 1
+    address: 5088
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Außenluft: Reduktion Luftmenge 10%
+  - name: aerosmartm_aussenluft_temp_reduktion_luftmenge_10_percent
+    slave: 1
+    address: 5422
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Außenluft: Reduktion Luftmenge 20%
+  - name: aerosmartm_aussenluft_temp_reduktion_luftmenge_20_percent
+    slave: 1
+    address: 5424
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Außenluft: Sommerautomatik aktivieren
+  - name: aerosmartm_aussenluft_temp_sommerautomatik_aktivieren
+    slave: 1
+    address: 5386
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur Außenluft: Sommerautomatik deaktivieren
+  - name: aerosmartm_aussenluft_temp_sommerautomatik_deaktivieren
+    slave: 1
+    address: 5388
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperatur: Sole nach Außenluftvorwärmung
+  - name: aerosmartm_aussenluft_temp_sole_nach_aussenluftvorwaermung
+    slave: 1
+    address: 206
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Temperaturschwelle Außenluft \\ Heizen / Kühlen
+  - name: aerosmartm_aussenluft_temp_schwelle_heizen_kuehlen
+    slave: 1
+    address: 5186
+    input_type: holding
+    data_type: uint32
+    scale: 0.001
+    precision: 1
+    unit_of_measurement: "°C"
+    state_class: measurement
+
+    # Vereisungsschutz
+  - name: aerosmartm_vereisungsschutz
+    slave: 1
+    address: 1294
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Temperaturfühler Außenluft
+  - name: aerosmartm_stoerung_temperaturfuehler_aussenluft
+    slave: 1
+    address: 806
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Störung: Temperaturfühler Sole Außenluft
+  - name: aerosmartm_stoerung_temperaturfuehler_sole_aussenluft
+    slave: 1
+    address: 7504
+    input_type: holding
+    data_type: uint32
+    state_class: measurement
+
+    # Betriebsstunden Solekreis Außenluft
+  - name: aerosmartm_betriebsstunden_sole_kreis_aussenluft
+    slave: 1
+    address: 970
+    input_type: holding
+    data_type: uint32
+    scale: 0.0166666667
+    precision: 0
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
