@@ -51,6 +51,7 @@ import asyncio
 from modbus_connection.pymodbus import connect_tcp
 from aerosmart_modbus import AerosmartDevice
 
+
 async def main():
     connection = await connect_tcp("192.0.2.10", port=8899)
     device = AerosmartDevice(
@@ -60,6 +61,7 @@ async def main():
     await device.async_update()
     print(device.outside_temperature.temp_aussenluft, "°C outside")
     print(device.heat_pump.wp_status)
+
 
 asyncio.run(main())
 ```
@@ -87,8 +89,8 @@ it was transcribed from, for traceability), and either `NumberMetadata` or
 
 ```python
 meta = device.hot_water_heat_pump.require_metadata_for("wp_brauchwasser_soll_temp")
-meta.writable        # True
-meta.source_key       # "aerosmartm_wp_brauchwasser_soll_temp"
+meta.writable  # True
+meta.source_key  # "aerosmartm_wp_brauchwasser_soll_temp"
 
 await device.hot_water_heat_pump.write("wp_brauchwasser_soll_temp", 52.0)
 ```

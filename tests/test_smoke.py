@@ -76,6 +76,5 @@ def test_read_plan_never_combines_datapoints():
     conn = MockModbusConnection()
     device = AerosmartDevice(conn.for_unit(1), conn.for_unit(2))
 
-    for group in (device._group_ventilation, device._group_heat_pump):
-        for blocks in group._build_plan().blocks.values():
-            assert all(count <= 2 for _address, count in blocks)
+    assert device.general.max_span == 2
+    assert device.heat_pump.max_span == 2

@@ -9,10 +9,10 @@ description = "A typed Modbus device model for aerosmart ventilation/heat-pump u
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.12"
-dependencies = ["modbus-connection>=3.4,<4"]
+dependencies = ["modbus-connection>=3.9,<4"]
 
 [project.optional-dependencies]
-cli = ["modbus-connection[pymodbus]>=3.4,<4"]
+cli = ["modbus-connection[pymodbus]>=3.9,<4"]
 
 [project.urls]
 Homepage = "https://github.com/kayloehmann/aerosmart-modbus"
