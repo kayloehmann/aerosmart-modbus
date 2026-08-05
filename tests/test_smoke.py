@@ -30,6 +30,27 @@ def test_device_updates_both_units():
     assert device.hot_water_heat_pump.warmwasser_speicher_oben == 45.0
 
 
+def test_device_updates_units_sequentially():
+    """Never overlap requests to stations sharing one serial gateway."""
+    conn = MockModbusConnection()
+    device = AerosmartDevice(conn.for_unit(1), conn.for_unit(2))
+    order: list[str] = []
+
+    async def update_ventilation():
+        order.extend(("ventilation-start", "ventilation-finished"))
+
+    async def update_heat_pump():
+        assert order == ["ventilation-start", "ventilation-finished"]
+        order.append("heat-pump")
+
+    device._group_ventilation.async_update = update_ventilation
+    device._group_heat_pump.async_update = update_heat_pump
+
+    asyncio.run(device.async_update())
+
+    assert order == ["ventilation-start", "ventilation-finished", "heat-pump"]
+
+
 def test_read_only_field_rejects_write():
     conn = MockModbusConnection()
     unit_v = conn.for_unit(1)

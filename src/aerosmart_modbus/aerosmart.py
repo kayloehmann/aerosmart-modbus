@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from typing import TYPE_CHECKING
 
 from modbus_connection.model import ComponentGroup
@@ -96,8 +95,6 @@ class AerosmartDevice:
         )
 
     async def async_update(self) -> None:
-        """Refresh both units' components concurrently."""
-        await asyncio.gather(
-            self._group_ventilation.async_update(),
-            self._group_heat_pump.async_update(),
-        )
+        """Refresh both units sequentially on their shared serial gateway."""
+        await self._group_ventilation.async_update()
+        await self._group_heat_pump.async_update()
