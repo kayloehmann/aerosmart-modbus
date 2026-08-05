@@ -134,6 +134,11 @@ class AerosmartComponent(Component):
     differently-addressed unit ever needs supporting.
     """
 
+    # The source configuration reads every 32-bit datapoint separately. Real
+    # aerosmart controllers reject larger combined reads with Modbus exception
+    # code 2 even when the documented datapoints are adjacent.
+    max_span = 2
+
     def metadata_for(self, field: str) -> DatapointMetadata | None:
         """Return neutral aerosmart metadata for a field."""
         descriptor = self._register_fields.get(field)
