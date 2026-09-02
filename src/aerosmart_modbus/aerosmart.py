@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from typing import TYPE_CHECKING
 
 from modbus_connection.model import ComponentGroup
@@ -22,6 +23,8 @@ from .summenstoerung import AggregateFault
 from .ventilator import Fans
 from .waermepumpe import HeatPump
 from .warmwasser import HotWaterHeatPump, HotWaterVentilation
+
+_UNIT_SWITCH_DELAY = 0.3
 
 if TYPE_CHECKING:
     from modbus_connection import ModbusUnit
@@ -97,4 +100,5 @@ class AerosmartDevice:
     async def async_update(self) -> None:
         """Refresh both units sequentially on their shared serial gateway."""
         await self._group_ventilation.async_update()
+        await asyncio.sleep(_UNIT_SWITCH_DELAY)
         await self._group_heat_pump.async_update()
