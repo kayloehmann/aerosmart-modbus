@@ -1,0 +1,11 @@
+when:
+  - event: [push, pull_request, manual]
+
+steps:
+  quality:
+    image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+    commands:
+      - uvx ruff format --check .
+      - uvx ruff check .
+      - uv sync --frozen
+      - uv run pytest
