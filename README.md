@@ -121,4 +121,5 @@ uv run ruff format .
 Tests run against `modbus_connection`'s in-memory mock (no real device
 needed) plus a YAML consistency check (`tests/test_yaml_consistency.py`)
 against the original source fragments under `tests/fixtures/aerosmartm/`.
-Tested against `modbus-connection` 3.4.x.
+Tested against `modbus-connection` 3.9.x. Project metadata accepts compatible
+releases from 3.9 up to, but excluding, 5.
