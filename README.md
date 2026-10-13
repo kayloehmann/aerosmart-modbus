@@ -71,13 +71,17 @@ asyncio.run(main())
 Live-tested against a real unit: this device sits behind a slow
 RS232-to-Modbus-TCP gateway. Issuing requests back-to-back with no pacing at
 all made the gateway return responses under stale/mismatched transaction IDs,
-and most reads timed out. Setting `unit.set_message_spacing(0.3)` (300ms
-between requests) on both units, plus a short (~1-2s) settle delay after
-connecting and after switching which unit you address, fixed this completely
--- all 137 registers then read cleanly. This library does not set spacing
-itself (it only models registers, not connection policy); a consumer talking
-to the real gateway should configure it on the `ModbusUnit` it passes in. The
-Home Assistant integrations in the sibling repos do this already.
+and most reads timed out. `AerosmartDevice` therefore asks the shared Modbus
+transport for 300ms of quiet before and after either unit's requests and a
+one-second settle delay after connecting. Consumers do not need to add sleeps
+or configure connection timing themselves.
+
+The device exposes `async_update_readings()` and `async_update_settings()` so
+consumers can poll operating data and the controller clock frequently while
+reading filter counters and slow-changing settings on a longer interval.
+`async_update()` still refreshes everything. Each returns an `UpdateReport`,
+allowing one failed sub-system to become unavailable without discarding fresh
+data from the others.
 
 ## Metadata and writes
 
@@ -121,5 +125,5 @@ uv run ruff format .
 Tests run against `modbus_connection`'s in-memory mock (no real device
 needed) plus a YAML consistency check (`tests/test_yaml_consistency.py`)
 against the original source fragments under `tests/fixtures/aerosmartm/`.
-Tested against `modbus-connection` 3.9.x. Project metadata accepts compatible
-releases from 3.9 up to, but excluding, 5.
+Tested against `modbus-connection` 4.12.x. Project metadata accepts compatible
+releases from 4.12 up to, but excluding, 5.

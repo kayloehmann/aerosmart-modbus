@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from .model import AerosmartComponent, uint32
+from .enums import HeatPumpStatus
+from .model import AerosmartComponent, enum, uint32
 
 
 class HeatPump(AerosmartComponent):
@@ -90,8 +91,26 @@ class HeatPump(AerosmartComponent):
     )
 
     # Status Wärmepumpe
-    wp_status = uint32(
-        1314, source_key="aerosmartm_wp_status", description="Status Wärmepumpe"
+    wp_status = enum(
+        1314,
+        HeatPumpStatus,
+        options=(
+            (0, "Wiedereinschaltsperre"),
+            (1, "Wärmepumpe aus"),
+            (2, "Vorlaufzeit Solepumpe"),
+            (3, "Vorlaufzeit Ventilatoren"),
+            (4, "Öffnen Heißgasventil"),
+            (5, "Öffnen Flüssiggasventil"),
+            (6, "Start Kompressor"),
+            (7, "Mindestlaufzeit Wärmepumpe"),
+            (8, "Wärmepumpe ein"),
+            (9, "Kältemittel absaugen"),
+            (10, "Beim Abtauen absaugen"),
+            (11, "Abtauen ein"),
+            (12, "Nach Abtauen abtropfen"),
+        ),
+        source_key="aerosmartm_wp_status",
+        description="Status Wärmepumpe",
     )
 
     # Status Wärmepumpe (Restzeit des aktuellen Status)

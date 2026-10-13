@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import asyncio
+from collections.abc import Iterable
 from typing import TYPE_CHECKING
 
-from modbus_connection.model import ComponentGroup
+from modbus_connection.model import Device, Raw, UpdateReport
 
 from .allgemein import General
 from .aussentemperatur import OutsideTemperature
@@ -24,23 +24,56 @@ from .ventilator import Fans
 from .waermepumpe import HeatPump
 from .warmwasser import HotWaterHeatPump, HotWaterVentilation
 
-_UNIT_SWITCH_DELAY = 0.3
-
 if TYPE_CHECKING:
     from modbus_connection import ModbusUnit
 
 DEFAULT_UNIT_VENTILATION = 1
 DEFAULT_UNIT_HEAT_PUMP = 2
 
+MESSAGE_SPACING_SECONDS = 0.3
+CONNECT_DELAY_SECONDS = 1.0
 
-class AerosmartDevice:
+# Fast-changing operating values and fault states. Even with the device's
+# one-datapoint read limit this poll completes comfortably inside its 60-second
+# Home Assistant interval.
+READING_COMPONENTS = (
+    "general",
+    "outside_temperature",
+    "fire_alarm",
+    "carbon_dioxide",
+    "cooling",
+    "ventilation",
+    "room_temperature",
+    "aggregate_fault",
+    "fans",
+    "hot_water_ventilation",
+    "utility_lockout",
+    "heat_pump",
+    "hot_water_heat_pump",
+)
+
+# Filter counters and user settings change slowly. They are separate so a
+# consumer can poll them on a longer interval and refresh them immediately
+# after a write.
+SETTINGS_COMPONENTS = (
+    "fine_dust_filter",
+    "coarse_dust_filter",
+    "summer_bypass",
+    "boost_functions_ventilation",
+    "boost_functions_heat_pump",
+)
+
+ALL_COMPONENTS = (*READING_COMPONENTS, *SETTINGS_COMPONENTS)
+
+
+class AerosmartDevice(Device):
     """An aerosmart ventilation/heat-pump unit, addressed as two Modbus units.
 
     The physical installation exposes one Modbus TCP gateway with two station
     (slave/unit) addresses: unit 1 is the ventilation controller (also the
     system's central controller -- most fault/request flags live there), unit
     2 is the heat pump / hot-water sub-controller. This models both under one
-    device object, each polled with its own pooled ``ComponentGroup``.
+    device object while reporting update success per functional component.
     """
 
     def __init__(
@@ -48,6 +81,9 @@ class AerosmartDevice:
         unit_ventilation: ModbusUnit,
         unit_heat_pump: ModbusUnit,
     ) -> None:
+        super().__init__(unit_ventilation)
+        self.configure_units(unit_ventilation, unit_heat_pump)
+
         self.general = General(unit_ventilation)
         self.outside_temperature = OutsideTemperature(unit_ventilation)
         self.fire_alarm = FireAlarm(unit_ventilation)
@@ -68,37 +104,28 @@ class AerosmartDevice:
         self.boost_functions_heat_pump = BoostFunctionsHeatPump(unit_heat_pump)
         self.hot_water_heat_pump = HotWaterHeatPump(unit_heat_pump)
 
-        self._group_ventilation = ComponentGroup(
-            unit_ventilation,
-            [
-                self.general,
-                self.outside_temperature,
-                self.fire_alarm,
-                self.carbon_dioxide,
-                self.fine_dust_filter,
-                self.coarse_dust_filter,
-                self.cooling,
-                self.ventilation,
-                self.room_temperature,
-                self.summer_bypass,
-                self.aggregate_fault,
-                self.fans,
-                self.boost_functions_ventilation,
-                self.hot_water_ventilation,
-            ],
-        )
-        self._group_heat_pump = ComponentGroup(
-            unit_heat_pump,
-            [
-                self.utility_lockout,
-                self.heat_pump,
-                self.boost_functions_heat_pump,
-                self.hot_water_heat_pump,
-            ],
-        )
+    @staticmethod
+    def configure_units(
+        unit_ventilation: ModbusUnit, unit_heat_pump: ModbusUnit
+    ) -> None:
+        """Apply the timing requirements of the physical aerosmart gateway."""
+        for unit in (unit_ventilation, unit_heat_pump):
+            unit.set_message_spacing(MESSAGE_SPACING_SECONDS)
+            unit.require_connect_delay(CONNECT_DELAY_SECONDS)
 
-    async def async_update(self) -> None:
-        """Refresh both units sequentially on their shared serial gateway."""
-        await self._group_ventilation.async_update()
-        await asyncio.sleep(_UNIT_SWITCH_DELAY)
-        await self._group_heat_pump.async_update()
+    async def async_update_readings(self) -> UpdateReport:
+        """Refresh operating values and fault states."""
+        return await self.async_poll(READING_COMPONENTS)
+
+    async def async_update_settings(self) -> UpdateReport:
+        """Refresh slow-changing settings and filter counters."""
+        return await self.async_poll(SETTINGS_COMPONENTS)
+
+    async def async_update(self) -> UpdateReport:
+        """Refresh every component, preserving partial-update information."""
+        report = await self.async_update_readings()
+        return await self.async_poll(SETTINGS_COMPONENTS, report)
+
+    async def async_read_raw(self, names: Iterable[str] = ALL_COMPONENTS) -> Raw:
+        """Read undecoded register values for the selected components."""
+        return await super().async_read_raw(names)

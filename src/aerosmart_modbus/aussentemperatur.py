@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from .model import AerosmartComponent, uint32
+from .model import AerosmartComponent, int32, uint32
 
 
 class OutsideTemperature(AerosmartComponent):
@@ -62,7 +62,7 @@ class OutsideTemperature(AerosmartComponent):
     )
 
     # Temperatur Außenluft: Reduktion Luftmenge 10%
-    aussenluft_temp_reduktion_luftmenge_10_percent = uint32(
+    aussenluft_temp_reduktion_luftmenge_10_percent = int32(
         5422,
         scale=0.001,
         unit="°C",
@@ -71,7 +71,7 @@ class OutsideTemperature(AerosmartComponent):
     )
 
     # Temperatur Außenluft: Reduktion Luftmenge 20%
-    aussenluft_temp_reduktion_luftmenge_20_percent = uint32(
+    aussenluft_temp_reduktion_luftmenge_20_percent = int32(
         5424,
         scale=0.001,
         unit="°C",
