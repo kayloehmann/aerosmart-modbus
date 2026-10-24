@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import TYPE_CHECKING
 
+from modbus_connection import ModbusTimeoutError
 from modbus_connection.model import Device, Raw, UpdateReport
 
 from .allgemein import General
@@ -52,6 +53,25 @@ READING_COMPONENTS = (
     "hot_water_heat_pump",
 )
 
+VENTILATION_READING_COMPONENTS = (
+    "general",
+    "outside_temperature",
+    "fire_alarm",
+    "carbon_dioxide",
+    "cooling",
+    "ventilation",
+    "room_temperature",
+    "aggregate_fault",
+    "fans",
+    "hot_water_ventilation",
+)
+
+HEAT_PUMP_READING_COMPONENTS = (
+    "utility_lockout",
+    "heat_pump",
+    "hot_water_heat_pump",
+)
+
 # Filter counters and user settings change slowly. They are separate so a
 # consumer can poll them on a longer interval and refresh them immediately
 # after a write.
@@ -62,6 +82,15 @@ SETTINGS_COMPONENTS = (
     "boost_functions_ventilation",
     "boost_functions_heat_pump",
 )
+
+VENTILATION_SETTINGS_COMPONENTS = (
+    "fine_dust_filter",
+    "coarse_dust_filter",
+    "summer_bypass",
+    "boost_functions_ventilation",
+)
+
+HEAT_PUMP_SETTINGS_COMPONENTS = ("boost_functions_heat_pump",)
 
 ALL_COMPONENTS = (*READING_COMPONENTS, *SETTINGS_COMPONENTS)
 
@@ -114,17 +143,45 @@ class AerosmartDevice(Device):
             unit.require_connect_delay(CONNECT_DELAY_SECONDS)
 
     async def async_update_readings(self) -> UpdateReport:
-        """Refresh operating values and fault states."""
-        return await self.async_poll(READING_COMPONENTS)
+        """Refresh operating values and fault states by controller."""
+        return await self._async_poll_controllers(
+            VENTILATION_READING_COMPONENTS, HEAT_PUMP_READING_COMPONENTS
+        )
 
     async def async_update_settings(self) -> UpdateReport:
-        """Refresh slow-changing settings and filter counters."""
-        return await self.async_poll(SETTINGS_COMPONENTS)
+        """Refresh slow-changing settings and filter counters by controller."""
+        return await self._async_poll_controllers(
+            VENTILATION_SETTINGS_COMPONENTS, HEAT_PUMP_SETTINGS_COMPONENTS
+        )
 
     async def async_update(self) -> UpdateReport:
         """Refresh every component, preserving partial-update information."""
         report = await self.async_update_readings()
-        return await self.async_poll(SETTINGS_COMPONENTS, report)
+        return await self._async_poll_controllers(
+            VENTILATION_SETTINGS_COMPONENTS,
+            HEAT_PUMP_SETTINGS_COMPONENTS,
+            report,
+        )
+
+    async def _async_poll_controllers(
+        self,
+        ventilation_components: tuple[str, ...],
+        heat_pump_components: tuple[str, ...],
+        report: UpdateReport | None = None,
+    ) -> UpdateReport:
+        """Poll each controller independently when the first unit times out.
+
+        ``Device.async_poll`` raises the first timeout to identify a dead link.
+        aerosmart uses independent controller units on one gateway, so a silent
+        ventilation controller must not prevent polling the heat-pump unit.
+        """
+        if report is None:
+            report = UpdateReport()
+        try:
+            await self.async_poll(ventilation_components, report)
+        except ModbusTimeoutError as err:
+            report.failed[ventilation_components[0]] = err
+        return await self.async_poll(heat_pump_components, report)
 
     async def async_read_raw(self, names: Iterable[str] = ALL_COMPONENTS) -> Raw:
         """Read undecoded register values for the selected components."""

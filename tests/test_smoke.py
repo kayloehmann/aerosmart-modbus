@@ -3,6 +3,7 @@
 import asyncio
 
 import pytest
+from modbus_connection import ModbusTimeoutError
 from modbus_connection.mock import MockModbusConnection
 from modbus_connection.model import UpdateReport
 
@@ -90,6 +91,20 @@ def test_device_exposes_separate_poll_categories():
     assert "fine_dust_filter" in settings.updated
     assert "fine_dust_filter" not in readings.updated
     assert "heat_pump" not in settings.updated
+
+
+def test_heat_pump_recovers_when_first_ventilation_read_times_out():
+    """A silent ventilation controller does not hide the heat-pump readings."""
+    conn = MockModbusConnection()
+    unit_v = conn.for_unit(1)
+    unit_h = conn.for_unit(2)
+    unit_v.fail_read(5000, ModbusTimeoutError("ventilation timeout"))
+    unit_h.holding[1044] = [0, 1]
+
+    report = asyncio.run(AerosmartDevice(unit_v, unit_h).async_update_readings())
+
+    assert "general" in report.failed
+    assert "heat_pump" in report.updated
 
 
 def test_read_only_field_rejects_write():
