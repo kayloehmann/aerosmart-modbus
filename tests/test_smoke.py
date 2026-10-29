@@ -94,16 +94,20 @@ def test_device_exposes_separate_poll_categories():
 
 
 def test_heat_pump_recovers_when_first_ventilation_read_times_out():
-    """A silent ventilation controller does not hide the heat-pump readings."""
+    """A failed general poll does not hide healthy controller components."""
     conn = MockModbusConnection()
     unit_v = conn.for_unit(1)
     unit_h = conn.for_unit(2)
     unit_v.fail_read(5000, ModbusTimeoutError("ventilation timeout"))
+    unit_v.holding[202] = [0, 123]
     unit_h.holding[1044] = [0, 1]
 
-    report = asyncio.run(AerosmartDevice(unit_v, unit_h).async_update_readings())
+    device = AerosmartDevice(unit_v, unit_h)
+    report = asyncio.run(device.async_update_readings())
 
     assert "general" in report.failed
+    assert "outside_temperature" in report.updated
+    assert device.outside_temperature.temp_aussenluft == 0.123
     assert "heat_pump" in report.updated
 
 

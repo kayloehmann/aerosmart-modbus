@@ -169,18 +169,20 @@ class AerosmartDevice(Device):
         heat_pump_components: tuple[str, ...],
         report: UpdateReport | None = None,
     ) -> UpdateReport:
-        """Poll each controller independently when the first unit times out.
+        """Poll each controller component independently when a unit times out.
 
         ``Device.async_poll`` raises the first timeout to identify a dead link.
         aerosmart uses independent controller units on one gateway, so a silent
-        ventilation controller must not prevent polling the heat-pump unit.
+        component must not prevent polling healthy ventilation or heat-pump
+        components.
         """
         if report is None:
             report = UpdateReport()
-        try:
-            await self.async_poll(ventilation_components, report)
-        except ModbusTimeoutError as err:
-            report.failed[ventilation_components[0]] = err
+        for component in ventilation_components:
+            try:
+                await self.async_poll((component,), report)
+            except ModbusTimeoutError as err:
+                report.failed[component] = err
         return await self.async_poll(heat_pump_components, report)
 
     async def async_read_raw(self, names: Iterable[str] = ALL_COMPONENTS) -> Raw:
