@@ -139,7 +139,7 @@ class AerosmartDevice(Device):
         self.heat_pump = HeatPump(unit_heat_pump)
         self.boost_functions_heat_pump = BoostFunctionsHeatPump(unit_heat_pump)
         self.hot_water_heat_pump = HotWaterHeatPump(unit_heat_pump)
-        self._write_lock = asyncio.Lock()
+        self._poll_write_lock = asyncio.Lock()
 
     async def async_write_verified(
         self, component_name: str, field: str, value: object
@@ -161,7 +161,7 @@ class AerosmartDevice(Device):
             )
 
         normalized = self._validate_write_value(component_name, field, value, metadata)
-        async with self._write_lock:
+        async with self._poll_write_lock:
             await component.write(field, normalized)
             actual = await component.async_refresh_field(field)
             if actual != normalized:
@@ -251,14 +251,15 @@ class AerosmartDevice(Device):
         component must not prevent polling healthy ventilation or heat-pump
         components.
         """
-        if report is None:
-            report = UpdateReport()
-        for component in ventilation_components:
-            try:
-                await self.async_poll((component,), report)
-            except ModbusTimeoutError as err:
-                report.failed[component] = err
-        return await self.async_poll(heat_pump_components, report)
+        async with self._poll_write_lock:
+            if report is None:
+                report = UpdateReport()
+            for component in ventilation_components:
+                try:
+                    await self.async_poll((component,), report)
+                except ModbusTimeoutError as err:
+                    report.failed[component] = err
+            return await self.async_poll(heat_pump_components, report)
 
     async def async_read_raw(self, names: Iterable[str] = ALL_COMPONENTS) -> Raw:
         """Read undecoded register values for the selected components."""

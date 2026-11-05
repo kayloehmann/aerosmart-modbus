@@ -171,6 +171,41 @@ def test_verified_temperature_write_is_normalized_to_register_precision():
     assert device.room_temperature.temp_raumluft_soll == 21.111
 
 
+async def test_poll_and_verified_write_are_serialized(monkeypatch):
+    """An older in-flight poll cannot overwrite a confirmed write."""
+    conn = MockModbusConnection()
+    unit_v = conn.for_unit(1)
+    unit_v.holding[5016] = [0, 21000]
+    device = AerosmartDevice(unit_v, conn.for_unit(2))
+    poll_read_started = asyncio.Event()
+    release_poll_read = asyncio.Event()
+    original_read = unit_v.read_holding_registers
+
+    async def delayed_read(address, count):
+        values = await original_read(address, count)
+        if address == 5016 and not poll_read_started.is_set():
+            poll_read_started.set()
+            await release_poll_read.wait()
+        return values
+
+    monkeypatch.setattr(unit_v, "read_holding_registers", delayed_read)
+    poll_task = asyncio.create_task(
+        device._async_poll_controllers(("room_temperature",), ())
+    )
+    await poll_read_started.wait()
+
+    write_task = asyncio.create_task(
+        device.async_write_verified("room_temperature", "temp_raumluft_soll", 22.0)
+    )
+    await asyncio.sleep(0)
+    assert not write_task.done()
+
+    release_poll_read.set()
+    await asyncio.gather(poll_task, write_task)
+
+    assert device.room_temperature.temp_raumluft_soll == 22.0
+
+
 def test_only_primary_controls_are_verified_writable():
     conn = MockModbusConnection()
     device = AerosmartDevice(conn.for_unit(1), conn.for_unit(2))
