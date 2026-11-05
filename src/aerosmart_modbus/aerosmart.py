@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Iterable
+from math import isfinite
+from numbers import Real
 from typing import TYPE_CHECKING
 
 from modbus_connection import ModbusTimeoutError
@@ -12,12 +15,15 @@ from .allgemein import General
 from .aussentemperatur import OutsideTemperature
 from .brandmeldeanlage import FireAlarm
 from .carbondioxide import CarbonDioxide
+from .errors import UnverifiedWriteError, WriteVerificationError
 from .evu import UtilityLockout
 from .feinstaubfilter import FineDustFilter
 from .funktionen import BoostFunctionsHeatPump, BoostFunctionsVentilation
 from .grobstaubfilter import CoarseDustFilter
 from .kuehlung import Cooling
 from .lueftungsanlage import Ventilation
+from .metadata import DatapointMetadata
+from .model import AerosmartComponent
 from .raumtemperatur import RoomTemperature
 from .sommerautomatik import SummerBypass
 from .summenstoerung import AggregateFault
@@ -132,6 +138,70 @@ class AerosmartDevice(Device):
         self.heat_pump = HeatPump(unit_heat_pump)
         self.boost_functions_heat_pump = BoostFunctionsHeatPump(unit_heat_pump)
         self.hot_water_heat_pump = HotWaterHeatPump(unit_heat_pump)
+        self._write_lock = asyncio.Lock()
+
+    async def async_write_verified(
+        self, component_name: str, field: str, value: object
+    ) -> object:
+        """Write one manufacturer-verified control and confirm its read-back.
+
+        All writes for both controller units share a lock so a write/read-back
+        pair cannot be interleaved with another control change from this
+        device instance.
+        """
+        component = getattr(self, component_name, None)
+        if not isinstance(component, AerosmartComponent):
+            raise AttributeError(f"unknown aerosmart component {component_name!r}")
+
+        metadata = component.require_metadata_for(field)
+        if not metadata.verified_writable:
+            raise UnverifiedWriteError(
+                f"write to {component_name}.{field} is not manufacturer-verified"
+            )
+
+        normalized = self._validate_write_value(component_name, field, value, metadata)
+        async with self._write_lock:
+            await component.write(field, normalized)
+            actual = await component.async_refresh_field(field)
+            if actual != normalized:
+                raise WriteVerificationError(component_name, field, normalized, actual)
+            return actual
+
+    @staticmethod
+    def _validate_write_value(
+        component_name: str,
+        field: str,
+        value: object,
+        metadata: DatapointMetadata,
+    ) -> object:
+        """Validate a control value against the documented field metadata."""
+        enum_metadata = metadata.enum
+        if enum_metadata is not None:
+            try:
+                return enum_metadata.enum_type(value)
+            except (TypeError, ValueError) as err:
+                valid = ", ".join(str(code) for code, _ in enum_metadata.options)
+                raise ValueError(
+                    f"{component_name}.{field} must be one of: {valid}"
+                ) from err
+
+        number_metadata = metadata.number
+        if (
+            number_metadata is None
+            or isinstance(value, bool)
+            or not isinstance(value, Real)
+            or not isfinite(float(value))
+        ):
+            raise ValueError(f"{component_name}.{field} requires a finite number")
+        if number_metadata.min_value is not None and value < number_metadata.min_value:
+            raise ValueError(
+                f"{component_name}.{field} must be at least {number_metadata.min_value}"
+            )
+        if number_metadata.max_value is not None and value > number_metadata.max_value:
+            raise ValueError(
+                f"{component_name}.{field} must be at most {number_metadata.max_value}"
+            )
+        return value
 
     @staticmethod
     def configure_units(

@@ -100,6 +100,7 @@ class HotWaterHeatPump(AerosmartComponent):
         scale=0.001,
         unit="°C",
         writable=True,
+        verified_writable=True,
         min_value=20.0,
         max_value=55.0,
         source_key="aerosmartm_wp_brauchwasser_soll_temp",

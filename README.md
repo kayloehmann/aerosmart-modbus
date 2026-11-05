@@ -86,22 +86,28 @@ data from the others.
 ## Metadata and writes
 
 Every field carries a `DatapointMetadata` (see `metadata.py`):
-`value_kind` (`"number"` or `"boolean"`), `writable`, `description` (the
-original German label), `source_key` (the original Home Assistant entity id
-it was transcribed from, for traceability), and either `NumberMetadata` or
-`BooleanMetadata`.
+`value_kind` (`"number"`, `"boolean"`, or `"enum"`), `writable`,
+`verified_writable`, `description` (the original German label), `source_key`
+(the original Home Assistant entity id it was transcribed from, for
+traceability), and the matching value metadata.
 
 ```python
 meta = device.hot_water_heat_pump.require_metadata_for("wp_brauchwasser_soll_temp")
 meta.writable  # True
+meta.verified_writable  # True
 meta.source_key  # "aerosmartm_wp_brauchwasser_soll_temp"
 
-await device.hot_water_heat_pump.write("wp_brauchwasser_soll_temp", 52.0)
+actual = await device.async_write_verified(
+    "hot_water_heat_pump", "wp_brauchwasser_soll_temp", 52.0
+)
 ```
 
-**Caution:** `writable=True` here reflects a naming heuristic against an
-unverified register map, not a confirmed manufacturer specification -- treat
-every writable field as unverified until checked against the real unit.
+Use `async_write_verified()` for consumer-facing controls. It only accepts
+registers whose write semantics and limits are confirmed by the manufacturer
+documentation, serializes writes across both controller units, validates the
+value, and reads the register back immediately. `writable=True` without
+`verified_writable=True` remains an unverified transcription and is rejected
+by this safe API.
 
 ## Command-line query tool
 
