@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Iterable
+from decimal import ROUND_HALF_UP, Decimal
 from math import isfinite
 from numbers import Real
 from typing import TYPE_CHECKING
@@ -201,7 +202,11 @@ class AerosmartDevice(Device):
             raise ValueError(
                 f"{component_name}.{field} must be at most {number_metadata.max_value}"
             )
-        return value
+        scale = Decimal(str(number_metadata.scale))
+        raw_value = (Decimal(str(value)) / scale).quantize(
+            Decimal(1), rounding=ROUND_HALF_UP
+        )
+        return float(raw_value * scale)
 
     @staticmethod
     def configure_units(
