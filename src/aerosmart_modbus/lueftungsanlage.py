@@ -34,6 +34,7 @@ class Ventilation(AerosmartComponent):
         5002,
         VentilationMode,
         writable=True,
+        verified_writable=True,
         options=(
             (0, "Manuell Stufe 0"),
             (1, "Manuell Stufe 1"),

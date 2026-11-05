@@ -24,6 +24,7 @@ class RoomTemperature(AerosmartComponent):
         scale=0.001,
         unit="°C",
         writable=True,
+        verified_writable=True,
         min_value=14.0,
         max_value=26.0,
         source_key="aerosmartm_temp_raumluft_soll",

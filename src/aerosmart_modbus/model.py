@@ -31,6 +31,7 @@ def uint32(
     scale: float = 1.0,
     unit: str | None = None,
     writable: bool = False,
+    verified_writable: bool = False,
     value_kind: str = "number",
     source_key: str | None = None,
     description: str | None = None,
@@ -40,6 +41,8 @@ def uint32(
     **kwargs: Any,
 ):
     """An unsigned 32-bit aerosmart register, with neutral metadata attached."""
+    if verified_writable and not writable:
+        raise ValueError("verified_writable requires writable=True")
     field = _modbus_uint32(address, scale=scale, unit=unit, writable=writable, **kwargs)
     return attach_metadata(
         field,
@@ -48,6 +51,7 @@ def uint32(
             source_key=source_key,
             description=description,
             writable=writable,
+            verified_writable=verified_writable,
             number=NumberMetadata(
                 min_value=min_value, max_value=max_value, digits=digits, unit=unit
             )
@@ -64,6 +68,7 @@ def int32(
     scale: float = 1.0,
     unit: str | None = None,
     writable: bool = False,
+    verified_writable: bool = False,
     value_kind: str = "number",
     source_key: str | None = None,
     description: str | None = None,
@@ -73,6 +78,8 @@ def int32(
     **kwargs: Any,
 ):
     """A signed 32-bit aerosmart register, with neutral metadata attached."""
+    if verified_writable and not writable:
+        raise ValueError("verified_writable requires writable=True")
     field = _modbus_int32(address, scale=scale, unit=unit, writable=writable, **kwargs)
     return attach_metadata(
         field,
@@ -81,6 +88,7 @@ def int32(
             source_key=source_key,
             description=description,
             writable=writable,
+            verified_writable=verified_writable,
             number=NumberMetadata(
                 min_value=min_value, max_value=max_value, digits=digits, unit=unit
             )
@@ -97,6 +105,7 @@ def enum[E: IntEnum](
     *,
     count: int = 2,
     writable: bool = False,
+    verified_writable: bool = False,
     source_key: str | None = None,
     description: str | None = None,
     options: tuple[tuple[int, str], ...] | None = None,
@@ -109,6 +118,8 @@ def enum[E: IntEnum](
     default for ``enum()``. ``options`` are ``(code, label)`` pairs in
     document order; if omitted, derived from ``enum_type``'s members.
     """
+    if verified_writable and not writable:
+        raise ValueError("verified_writable requires writable=True")
     field = _modbus_enum(address, enum_type, count=count, writable=writable, **kwargs)
     resolved_options = options or tuple(
         (int(member), member.name) for member in enum_type
@@ -120,6 +131,7 @@ def enum[E: IntEnum](
             source_key=source_key,
             description=description,
             writable=writable,
+            verified_writable=verified_writable,
             enum=EnumMetadata(enum_type=enum_type, options=resolved_options),
         ),
     )
@@ -152,3 +164,20 @@ class AerosmartComponent(Component):
         if metadata is None:
             raise AttributeError(f"unknown or untyped aerosmart field {field!r}")
         return metadata
+
+    async def async_refresh_field(self, field: str) -> Any:
+        """Read one field, update its cached value, and notify listeners.
+
+        aerosmart controllers only accept one 32-bit datapoint per request.
+        A restricted probe therefore gives writes a fast, exact read-back
+        without refreshing every datapoint in the component.
+        """
+        if field not in self.resolved_fields:
+            raise AttributeError(f"unknown field {field!r}")
+        probe = type(self)(self.modbus_unit)
+        probe.restrict_fields((field,))
+        await probe.async_update(notify=False)
+        value = getattr(probe, field)
+        self._values[field] = value
+        self.notify()
+        return value

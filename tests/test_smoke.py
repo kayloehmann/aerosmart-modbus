@@ -7,13 +7,17 @@ from modbus_connection import ModbusTimeoutError
 from modbus_connection.mock import MockModbusConnection
 from modbus_connection.model import UpdateReport
 
-from aerosmart_modbus import AerosmartDevice
+from aerosmart_modbus import (
+    AerosmartDevice,
+    UnverifiedWriteError,
+    WriteVerificationError,
+)
 from aerosmart_modbus.aerosmart import (
     ALL_COMPONENTS,
     READING_COMPONENTS,
     SETTINGS_COMPONENTS,
 )
-from aerosmart_modbus.enums import HeatPumpStatus
+from aerosmart_modbus.enums import HeatPumpStatus, VentilationMode
 
 
 def test_device_updates_both_units():
@@ -130,6 +134,95 @@ def test_writable_setpoint_round_trips():
     asyncio.run(device.hot_water_heat_pump.write("wp_brauchwasser_soll_temp", 50.0))
     asyncio.run(device.hot_water_heat_pump.async_update())
     assert device.hot_water_heat_pump.wp_brauchwasser_soll_temp == 50.0
+
+
+@pytest.mark.parametrize(
+    ("component", "field", "value", "expected"),
+    (
+        ("ventilation", "betriebsart", 4, VentilationMode.AUTOMATIC),
+        ("room_temperature", "temp_raumluft_soll", 21.5, 21.5),
+        ("hot_water_heat_pump", "wp_brauchwasser_soll_temp", 50.0, 50.0),
+    ),
+)
+def test_verified_controls_write_and_read_back(component, field, value, expected):
+    conn = MockModbusConnection()
+    device = AerosmartDevice(conn.for_unit(1), conn.for_unit(2))
+
+    actual = asyncio.run(device.async_write_verified(component, field, value))
+
+    assert actual == expected
+    assert getattr(getattr(device, component), field) == expected
+
+
+def test_only_primary_controls_are_verified_writable():
+    conn = MockModbusConnection()
+    device = AerosmartDevice(conn.for_unit(1), conn.for_unit(2))
+
+    verified = {
+        (component_name, field)
+        for component_name in ALL_COMPONENTS
+        for field in getattr(device, component_name).resolved_fields
+        if getattr(device, component_name).require_metadata_for(field).verified_writable
+    }
+
+    assert verified == {
+        ("ventilation", "betriebsart"),
+        ("room_temperature", "temp_raumluft_soll"),
+        ("hot_water_heat_pump", "wp_brauchwasser_soll_temp"),
+    }
+
+
+def test_unverified_writable_register_is_rejected():
+    conn = MockModbusConnection()
+    unit_v = conn.for_unit(1)
+    device = AerosmartDevice(unit_v, conn.for_unit(2))
+
+    with pytest.raises(UnverifiedWriteError):
+        asyncio.run(
+            device.async_write_verified(
+                "boost_functions_ventilation", "function_heizung_plus", 1
+            )
+        )
+
+    assert 5492 not in unit_v.holding
+
+
+@pytest.mark.parametrize(
+    ("component", "field", "value"),
+    (
+        ("ventilation", "betriebsart", 6),
+        ("room_temperature", "temp_raumluft_soll", 13.9),
+        ("room_temperature", "temp_raumluft_soll", 26.1),
+        ("hot_water_heat_pump", "wp_brauchwasser_soll_temp", 19.9),
+        ("hot_water_heat_pump", "wp_brauchwasser_soll_temp", 55.1),
+    ),
+)
+def test_verified_controls_reject_out_of_range_values(component, field, value):
+    conn = MockModbusConnection()
+    device = AerosmartDevice(conn.for_unit(1), conn.for_unit(2))
+
+    with pytest.raises(ValueError):
+        asyncio.run(device.async_write_verified(component, field, value))
+
+
+def test_verified_write_rejects_mismatching_read_back():
+    conn = MockModbusConnection()
+    unit_v = conn.for_unit(1)
+    device = AerosmartDevice(unit_v, conn.for_unit(2))
+
+    def replace_written_value(event):
+        if event.address == 5016:
+            unit_v.holding[5017] = 22000
+
+    unit_v.on_write(replace_written_value)
+
+    with pytest.raises(WriteVerificationError) as error:
+        asyncio.run(
+            device.async_write_verified("room_temperature", "temp_raumluft_soll", 21.0)
+        )
+
+    assert error.value.requested == 21.0
+    assert error.value.actual == 22.0
 
 
 def test_metadata_reflects_classification():

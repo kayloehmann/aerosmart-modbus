@@ -9,6 +9,7 @@ Assistant dependency.
 from __future__ import annotations
 
 from .aerosmart import DEFAULT_UNIT_HEAT_PUMP, DEFAULT_UNIT_VENTILATION, AerosmartDevice
+from .errors import UnverifiedWriteError, WriteVerificationError
 from .metadata import BooleanMetadata, DatapointMetadata, NumberMetadata
 
 __all__ = [
@@ -18,4 +19,6 @@ __all__ = [
     "BooleanMetadata",
     "DatapointMetadata",
     "NumberMetadata",
+    "UnverifiedWriteError",
+    "WriteVerificationError",
 ]
