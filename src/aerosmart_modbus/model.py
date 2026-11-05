@@ -53,7 +53,11 @@ def uint32(
             writable=writable,
             verified_writable=verified_writable,
             number=NumberMetadata(
-                min_value=min_value, max_value=max_value, digits=digits, unit=unit
+                scale=scale,
+                min_value=min_value,
+                max_value=max_value,
+                digits=digits,
+                unit=unit,
             )
             if value_kind == "number"
             else None,
@@ -90,7 +94,11 @@ def int32(
             writable=writable,
             verified_writable=verified_writable,
             number=NumberMetadata(
-                min_value=min_value, max_value=max_value, digits=digits, unit=unit
+                scale=scale,
+                min_value=min_value,
+                max_value=max_value,
+                digits=digits,
+                unit=unit,
             )
             if value_kind == "number"
             else None,

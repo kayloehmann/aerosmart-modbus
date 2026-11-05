@@ -16,6 +16,7 @@ ValueKind = Literal["number", "boolean", "enum"]
 class NumberMetadata:
     """Metadata for numeric aerosmart values."""
 
+    scale: float = 1.0
     min_value: float | int | None = None
     max_value: float | int | None = None
     digits: int | None = None

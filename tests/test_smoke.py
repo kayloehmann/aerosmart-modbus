@@ -154,6 +154,23 @@ def test_verified_controls_write_and_read_back(component, field, value, expected
     assert getattr(getattr(device, component), field) == expected
 
 
+def test_verified_temperature_write_is_normalized_to_register_precision():
+    """A converted Fahrenheit value is verified at millidegree precision."""
+    conn = MockModbusConnection()
+    unit_v = conn.for_unit(1)
+    device = AerosmartDevice(unit_v, conn.for_unit(2))
+
+    actual = asyncio.run(
+        device.async_write_verified(
+            "room_temperature", "temp_raumluft_soll", (70 - 32) * 5 / 9
+        )
+    )
+
+    assert actual == 21.111
+    assert [unit_v.holding[address] for address in (5016, 5017)] == [0, 21111]
+    assert device.room_temperature.temp_raumluft_soll == 21.111
+
+
 def test_only_primary_controls_are_verified_writable():
     conn = MockModbusConnection()
     device = AerosmartDevice(conn.for_unit(1), conn.for_unit(2))
