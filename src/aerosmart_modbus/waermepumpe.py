@@ -15,9 +15,11 @@ class HeatPump(AerosmartComponent):
     )
 
     # Verdampferregister
+    # Official doc: raw -28000..100000, divisor 100 and one decimal place.
+    # The displayed value therefore uses an effective scale of 0.001.
     wp_verdamperregister = uint32(
         210,
-        scale=100,
+        scale=0.001,
         unit="°C",
         source_key="aerosmartm_wp_verdamperregister",
         description="Verdampferregister",

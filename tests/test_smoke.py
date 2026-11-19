@@ -31,6 +31,7 @@ def test_device_updates_both_units():
     unit_v.holding[1174] = [0, 3]  # wochentag
     unit_v.holding[202] = [0, 123]  # temp_aussenluft (scale 0.001 -> 0.123)
     unit_h.holding[1044] = [0, 1]  # waermepumpe
+    unit_h.holding[210] = [0, 15195]  # wp_verdamperregister -> 15.195 °C
     unit_h.holding[1314] = [0, 1]  # wp_status: Wärmepumpe aus
     unit_h.holding[212] = [0, 45000]  # warmwasser_speicher_oben (scale 0.001 -> 45.0)
 
@@ -41,6 +42,7 @@ def test_device_updates_both_units():
     assert device.general.wochentag == 3
     assert device.outside_temperature.temp_aussenluft == 0.123
     assert device.heat_pump.waermepumpe == 1
+    assert device.heat_pump.wp_verdamperregister == 15.195
     assert device.heat_pump.wp_status is HeatPumpStatus.OFF
     assert device.hot_water_heat_pump.warmwasser_speicher_oben == 45.0
 
