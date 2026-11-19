@@ -31,7 +31,7 @@ VERIFIED_SCALE_OVERRIDES = {
     "aerosmartm_zeitspanne_function_heizung_plus": 0.0166666667,
     "aerosmartm_sollwert_erhoehung_function_heizung_plus": 0.001,
     "aerosmartm_zeitspanne_function_party": 0.0166666667,
-    "aerosmartm_wp_verdamperregister": 0.001,
+    "aerosmartm_wp_verdamperregister": 0.01,
 }
 
 

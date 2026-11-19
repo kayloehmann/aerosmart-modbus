@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from .enums import HeatPumpStatus
-from .model import AerosmartComponent, enum, uint32
+from .model import AerosmartComponent, enum, int32, uint32
 
 
 class HeatPump(AerosmartComponent):
@@ -15,12 +15,12 @@ class HeatPump(AerosmartComponent):
     )
 
     # Verdampferregister
-    # Official doc: raw -28000..100000, divisor 100 and one decimal place.
-    # The displayed value therefore uses an effective scale of 0.001.
-    wp_verdamperregister = uint32(
+    # Official doc: signed raw -28000..100000 with divisor 100.
+    wp_verdamperregister = int32(
         210,
-        scale=0.001,
+        scale=0.01,
         unit="°C",
+        digits=1,
         source_key="aerosmartm_wp_verdamperregister",
         description="Verdampferregister",
     )
