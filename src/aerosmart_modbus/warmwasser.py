@@ -126,6 +126,7 @@ class HotWaterHeatPump(AerosmartComponent):
     # Betriebsstunden: Elektroheizstab
     wp_betriebsstunden_elektroheizstab = uint32(
         922,
+        scale=1 / 60,
         unit="h",
         source_key="aerosmartm_wp_betriebsstunden_elektroheizstab",
         description="Betriebsstunden: Elektroheizstab",

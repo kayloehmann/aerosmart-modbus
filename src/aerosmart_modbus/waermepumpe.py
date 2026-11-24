@@ -35,6 +35,7 @@ class HeatPump(AerosmartComponent):
     # Betriebsstunden: Kompressormotor
     wp_betriebsstunden_kompressormotor = uint32(
         910,
+        scale=1 / 60,
         unit="h",
         source_key="aerosmartm_wp_betriebsstunden_kompressormotor",
         description="Betriebsstunden: Kompressormotor",
@@ -43,6 +44,7 @@ class HeatPump(AerosmartComponent):
     # Betriebsstunden: Magnetventil Flüssiggas
     wp_betriebsstunden_magnetventil_fluessiggas = uint32(
         916,
+        scale=1 / 60,
         unit="h",
         source_key="aerosmartm_wp_betriebsstunden_magnetventil_fluessiggas",
         description="Betriebsstunden: Magnetventil Flüssiggas",
@@ -51,6 +53,7 @@ class HeatPump(AerosmartComponent):
     # Betriebsstunden: Magnetventil Heißgas
     wp_betriebsstunden_magnetventil_heissgas = uint32(
         918,
+        scale=1 / 60,
         unit="h",
         source_key="aerosmartm_wp_betriebsstunden_magnetventil_heissgas",
         description="Betriebsstunden: Magnetventil Heißgas",
@@ -59,6 +62,7 @@ class HeatPump(AerosmartComponent):
     # Betriebsstunden: Magnetventil Luftkondensator
     wp_betriebsstunden_magnetventil_luftkondensator = uint32(
         920,
+        scale=1 / 60,
         unit="h",
         source_key="aerosmartm_wp_betriebsstunden_magnetventil_luftkondensator",
         description="Betriebsstunden: Magnetventil Luftkondensator",
