@@ -1,13 +1,8 @@
 """Regression guard: every Python field matches its source YAML 1:1.
 
-There is no manufacturer register manual for aerosmart to check against
-(unlike e.g. Trovis' canonical_points.json parity fixture), so this test
-plays that role instead: it re-parses the original Home Assistant `modbus:`
-YAML fragments this library was transcribed from (``tests/fixtures/``) and
-asserts every field's address/scale/slave still matches. A mismatch here
-means the transcription drifted from the source, not that the source itself
-is correct -- the YAML predates this library and was never independently
-verified against a manufacturer document either.
+Check register addresses and scales against the original Home Assistant
+Modbus YAML, with exceptions for scales verified against the manufacturer
+register table.
 """
 
 from __future__ import annotations
@@ -24,14 +19,18 @@ FIELD_RE = re.compile(r"^(name|slave|address|input_type|data_type|scale):\s*(.*?
 # Fields whose scale was corrected against the official Drexel & Weiss Modbus
 # documentation (aerosmart_m_modbus.pdf, "Modbus_Parameter_aerosmart_m",
 # p.55-63) after it was found to differ from the source YAML's missing or
-# incorrect scale. Source of truth flips from "matches the YAML" to "matches the
-# manufacturer doc" for exactly these keys; see the comments at each field's
-# definition for the specific verification.
+# incorrect scale. Page 60 lists a divisor of 60 for registers 910 and 916–922
+# (916, 918, 920, 922).
 VERIFIED_SCALE_OVERRIDES = {
     "aerosmartm_zeitspanne_function_heizung_plus": 0.0166666667,
     "aerosmartm_sollwert_erhoehung_function_heizung_plus": 0.001,
     "aerosmartm_zeitspanne_function_party": 0.0166666667,
     "aerosmartm_wp_verdamperregister": 0.01,
+    "aerosmartm_wp_betriebsstunden_kompressormotor": 1 / 60,
+    "aerosmartm_wp_betriebsstunden_magnetventil_fluessiggas": 1 / 60,
+    "aerosmartm_wp_betriebsstunden_magnetventil_heissgas": 1 / 60,
+    "aerosmartm_wp_betriebsstunden_magnetventil_luftkondensator": 1 / 60,
+    "aerosmartm_wp_betriebsstunden_elektroheizstab": 1 / 60,
 }
 
 

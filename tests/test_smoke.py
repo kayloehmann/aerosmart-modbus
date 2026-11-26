@@ -47,6 +47,30 @@ def test_device_updates_both_units():
     assert device.hot_water_heat_pump.warmwasser_speicher_oben == 45.0
 
 
+def test_heat_pump_runtime_counters_are_reported_in_hours():
+    conn = MockModbusConnection()
+    unit_h = conn.for_unit(2)
+    device = AerosmartDevice(conn.for_unit(1), unit_h)
+
+    unit_h.holding[910] = [1, 121]  # 65,657 minutes, spanning both words
+    unit_h.holding[916] = [0, 60]
+    unit_h.holding[918] = [0, 1]
+    unit_h.holding[920] = [0, 90]
+    unit_h.holding[922] = [0, 120]
+
+    asyncio.run(device.async_update_readings())
+
+    assert device.heat_pump.wp_betriebsstunden_kompressormotor == pytest.approx(
+        65657 / 60
+    )
+    assert device.heat_pump.wp_betriebsstunden_magnetventil_fluessiggas == 1
+    assert device.heat_pump.wp_betriebsstunden_magnetventil_heissgas == pytest.approx(
+        1 / 60
+    )
+    assert device.heat_pump.wp_betriebsstunden_magnetventil_luftkondensator == 1.5
+    assert device.hot_water_heat_pump.wp_betriebsstunden_elektroheizstab == 2
+
+
 def test_negative_outside_air_reduction_thresholds_are_signed():
     """Confirmed negative thresholds must not wrap to about 4.3 million degrees."""
     conn = MockModbusConnection()
